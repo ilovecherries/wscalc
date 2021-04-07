@@ -1,7 +1,6 @@
 module operator;
 
-alias Prefix = int function(int);
-alias Infix = int function(int, int);
+alias Num = double;
 
 /// Operations that modify numbers
 class Operator (T)
@@ -13,10 +12,13 @@ class Operator (T)
     /// The alias that is represented in the program.
     string altName;
 
-    /// Creates a constructor for the number
+    /// Contstructs an Operator
     this(string symbol, T operation, string altName) {
         this.symbol = symbol;
         this.operation = operation;
         this.altName = altName;
     }
 }
+
+alias Prefix = Operator!(Num function(Num));
+alias Infix = Operator!(Num function(Num, Num));
