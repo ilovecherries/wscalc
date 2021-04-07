@@ -56,20 +56,37 @@ Num doline(immutable string input)
     }
     // grabs the next token from the input
     Token next() {
-        immutable string symbol = input[i++];
+        // TODO: whatever char at is idc fix this later i just want to sleep
+        // i think
+        immutable string symbol = input;
         immutable TokenType tokenType = detectTokenType(symbol);
-        // FIXME: how the fuck do i do struct definitions???
-        Token token = {
-            tokenType:tokenType;
-            symbol:symbol;
-        };
+        // TODO: need to figure out shorthand
+        Token token;
+        token.type = tokenType;
+        token.symbol = symbol;
         return token;
     }
 
     return result;
 }
 
+/// Integer infix operations
+unittest
+{
+    assert(doline("15+20") == 35.0);
+    assert(doline("15-20") == -5.0);
+    assert(doline("15*20") == 300.0);
+    assert(doline("15/20") == 0.75);
+    assert(doline("15%20") == 15);
+}
+
+/// Integer infix operations
+unittest
+{
+    assert(doline("-15.0") == -15.0);
+}
+
 void main()
 {
-
+    writefln(":(");
 }
