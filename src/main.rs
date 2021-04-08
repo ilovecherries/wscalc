@@ -1,3 +1,5 @@
+use muncher::Muncher;
+
 type Num = i32;
 
 type Infix = fn(Num, Num) -> Num;
@@ -6,9 +8,9 @@ type Prefix = fn(Num) -> Num;
 macro_rules! mane {($owo:block) => {fn main() {$owo}};}
 
 struct Operator<'a, T> {
-	operation: T,
-	symbol: &'a str,
-	description: &'a str
+   operation: T,
+   symbol: &'a str,
+   description: &'a str
 }
 
 macro_rules! DefOp {
@@ -21,14 +23,31 @@ macro_rules! DefOp {
     }
 }
 
+// this only works on infix operators right now because im too lazy
+fn doline<'a>(infix: Vec<Operator<Box<Infix>>>, prefix: Vec<Operator<Box<Prefix>>>,
+          input: &'a str) -> Num
+{
+    enum Expected {
+        PrefixOrLiteral, Literal, Infix
+    }
+    let mut result: Num;
+    // first we expect a prefix or literal: - or 20
+    let mut expectNext = Expected::Literal;
+    let mut m = Muncher::new(input);
+    println!("{}", match expectNext {
+        Expected::Literal => m.eat_until(|ch| !ch.is_digit(10)).collect::<String>(),
+        _ => String::from("...") 
+    });
+    return 0;
+}
+
 mane!({
     let prefixes = vec![
         DefOp!(Prefix, |x: Num| {-x}, "-", "subtraction"),
         // DefOp!(Prefix, |x: Num| {~x}, "~", "bitwise not")
     ];
     let infixes = vec![
-        DefOp!(Infix, |x: Num, y: Num| {x + y}, "+", "addition"),
-        DefOp!(Infix, |x: Num, y: Num| {x - y}, "-", "subtraction"),
+        DefOp!(Infix, |x: Num, y: Num| {x + y}, "+", "addition"), DefOp!(Infix, |x: Num, y: Num| {x - y}, "-", "subtraction"),
         DefOp!(Infix, |x: Num, y: Num| {x * y}, "*", "multiplication"),
         DefOp!(Infix, |x: Num, y: Num| {x / y}, "/", "division"),
         DefOp!(Infix, |x: Num, y: Num| {x % y}, "/", "modulus"),
@@ -36,8 +55,10 @@ mane!({
 
     let x = 10;
     let y = 20;
-    for i in infixes {
-        println!("{}: {} {} {} = {}", i.description, x, i.symbol, y, 
+    for i in &infixes {
+        println!("{}: {} {} {} = {}", i.description, x, i.symbol, y,
                  (i.operation)(x, y));
     }
+
+    println!("{}", doline(infixes, prefixes, "321+5"));
 });
