@@ -23,6 +23,18 @@ macro_rules! DefOp {
     }
 }
 
+macro_rules! Ops {
+    [$($owo:expr),+] => {
+        {
+            let mut v = vec![$($owo),+];
+            v.sort_by(|a, b| 
+                b.symbol.chars().count()
+                .cmp(&a.symbol.chars().count()));
+            v
+        };
+    };
+}
+
 // this only works on infix operators right now because im too lazy
 fn doline<'a>(infix: Vec<Operator<Box<Infix>>>, prefix: Vec<Operator<Box<Prefix>>>,
           input: &'a str) -> Num
@@ -42,15 +54,17 @@ fn doline<'a>(infix: Vec<Operator<Box<Infix>>>, prefix: Vec<Operator<Box<Prefix>
 }
 
 mane!({
-    let prefixes = vec![
-        DefOp!(Prefix, |x: Num| {-x}, "-", "subtraction"),
+    let prefixes = Ops![
+        DefOp!(Prefix, |x: Num| {-x}, "-", "subtraction")
         // DefOp!(Prefix, |x: Num| {~x}, "~", "bitwise not")
     ];
-    let infixes = vec![
-        DefOp!(Infix, |x: Num, y: Num| {x + y}, "+", "addition"), DefOp!(Infix, |x: Num, y: Num| {x - y}, "-", "subtraction"),
+
+    let infixes = Ops![
+        DefOp!(Infix, |x: Num, y: Num| {x + y}, "+", "addition"), 
+        DefOp!(Infix, |x: Num, y: Num| {x - y}, "-", "subtraction"),
         DefOp!(Infix, |x: Num, y: Num| {x * y}, "*", "multiplication"),
         DefOp!(Infix, |x: Num, y: Num| {x / y}, "/", "division"),
-        DefOp!(Infix, |x: Num, y: Num| {x % y}, "/", "modulus"),
+        DefOp!(Infix, |x: Num, y: Num| {x % y}, "%", "modulus")
     ];
 
     let x = 10;
