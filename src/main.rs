@@ -24,15 +24,13 @@ macro_rules! DefOp {
 }
 
 macro_rules! Ops {
-    [$($owo:expr),+] => {
-        {
-            let mut v = vec![$($owo),+];
-            v.sort_by(|a, b| 
-                b.symbol.chars().count()
-                .cmp(&a.symbol.chars().count()));
-            v
-        };
-    };
+    [$($owo:expr),+] => ({
+        let mut v = vec![$($owo),+];
+        v.sort_by(|a, b| 
+            b.symbol.chars().count()
+            .cmp(&a.symbol.chars().count()));
+        v
+    };);
 }
 
 // this only works on infix operators right now because im too lazy
