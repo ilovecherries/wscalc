@@ -19,11 +19,6 @@ Infix[] infixOperators = [
     new Infix("%", (Num x, y) => x % y, "modules")
 ];
 
-/// The type of token that we are parsing.
-enum TokenType {
-    Expression, Literal
-}
-
 /// The representation of the AST for the calculator
 struct Token {
     /// The type of token that is being contained
@@ -38,12 +33,19 @@ struct Token {
 /// deprived right now to look at what they did
 Num doline(immutable string input) 
 {
-    Num result = 0.0;
-    int i;
+    // These are the types of tokens that we expect to parse next
+    enum Expect{
+        Infix, Prefix, 
+        Literal, InfixOrLiteral
+    }
     // detects the type of token from a given input
-    TokenType detectTokenType(immutable string input) {
+    TokenType correctTokenType(immutable string input, Expect expected) {
         // iterate through all prefix and infix operators and see if any of
         // them match
+        
+        switch (expected) {
+            case Expect.Infix:
+        }
         foreach (Prefix p; prefixOperators) {
             if (input.startsWith(p.symbol))
                 return TokenType.Expression;
@@ -66,6 +68,9 @@ Num doline(immutable string input)
         token.symbol = symbol;
         return token;
     }
+    Expect expectNext = Expect.InfixOrLiteral;
+    Num result = 0.0;
+    int i;
 
     return result;
 }
